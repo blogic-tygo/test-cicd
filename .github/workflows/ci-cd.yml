@@ -1,12 +1,36 @@
-name: Local Runner Test
+name: Angular CI/CD with Docker
 
 on:
   push:
     branches: ['main']
 
 jobs:
-  test:
-    runs-on: self-hosted
+  build:
+    runs-on: self-hosted # hoặc ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v4
-      - run: echo "Runner is working!"
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build Angular app
+        run: npm run build -- --configuration production
+
+      - name: Build Docker image
+        run: docker build -t angular-app:${{ github.sha }} .
+
+      - name: Stop old container (if exists)
+        run: docker stop angular-container || true
+
+      - name: Remove old container (if exists)
+        run: docker rm angular-container || true
+
+      - name: Run new container
+        run: docker run -d -p 80:80 --name angular-container angular-app
