@@ -28,25 +28,47 @@
 
 # Stage 1: build Angular app
 
-ARG NODE_VERSION=24.14.1
+# ARG NODE_VERSION=24.14.1
 
-FROM node:${NODE_VERSION}-alpine AS build
+# FROM node:${NODE_VERSION}-alpine AS build
+
+# WORKDIR /app
+
+# COPY package*.json ./
+# RUN npm install
+
+# COPY . .
+
+# # build production
+# RUN npm run build -- --configuration production
+
+
+# # Stage 2: serve bằng nginx
+# FROM nginx:alpine
+
+# COPY --from=build /app/dist/ /usr/share/nginx/html
+
+# EXPOSE 80
+# CMD ["nginx", "-g", "daemon off;"]
+
+# build stage
+FROM node:24.14.1 AS build
+
+WORKDIR /app
+COPY . .
+RUN npm install
+RUN npm run build
+
+
+# run stage
+FROM node:24.14.1
 
 WORKDIR /app
 
-COPY package*.json ./
-RUN npm install
+COPY --from=build /app/dist ./dist
+COPY --from=build /app/node_modules ./node_modules
+COPY --from=build /app/package.json ./package.json
 
-COPY . .
+EXPOSE 4000
 
-# build production
-RUN npm run build -- --configuration production
-
-
-# Stage 2: serve bằng nginx
-FROM nginx:alpine
-
-COPY --from=build /app/dist/ /usr/share/nginx/html
-
-EXPOSE 80
-CMD ["nginx", "-g", "daemon off;"]
+CMD ["node", "dist/server/server.mjs"]
