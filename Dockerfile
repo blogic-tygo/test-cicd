@@ -27,7 +27,10 @@
 # CMD [ "node", "dist/hero-app/server/server.mjs" ]
 
 # Stage 1: build Angular app
-FROM node:24.14.1 AS build
+
+ARG NODE_VERSION=24.14.1
+
+FROM node:${NODE_VERSION}-alpine AS builder
 
 WORKDIR /app
 
