@@ -5,7 +5,11 @@ import { serverRoutes } from './app.routes.server';
 
 const serverConfig: ApplicationConfig = {
   providers: [
-    provideServerRendering(withRoutes(serverRoutes))
+    provideServerRendering(withRoutes(serverRoutes)),
+    {
+      provide: 'SSR_ALLOWED_ORIGINS',
+      useValue: ['http://localhost:4000', 'http://127.0.0.1:4000']
+    }
   ]
 };
 

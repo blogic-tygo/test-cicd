@@ -2,12 +2,11 @@ import { Component, isDevMode, signal } from '@angular/core';
 import { RouterModule, RouterOutlet } from '@angular/router';
 
 @Component({
-  selector: 'app-root',
+  selector: 'app-category',
   imports: [RouterOutlet, RouterModule],
-  templateUrl: './app.html',
-  styleUrl: './app.css'
+  templateUrl: './category.html',
 })
-export class App {
+export class CategoryComponent {
   protected readonly title = signal('hero-app');
 
   protected readonly isDevMode = isDevMode();
