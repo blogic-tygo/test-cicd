@@ -30,7 +30,7 @@
 
 ARG NODE_VERSION=24.14.1
 
-FROM node:${NODE_VERSION}-alpine AS builder
+FROM node:${NODE_VERSION}-alpine AS build
 
 WORKDIR /app
 
